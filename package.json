@@ -1,0 +1,27 @@
+{
+  "name": "evergarden",
+  "version": "1.0.0",
+  "description": "node server",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/UgliFan/Evergarden.git"
+  },
+  "keywords": [
+    "nodejs"
+  ],
+  "author": "uglifan",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/UgliFan/Evergarden/issues"
+  },
+  "homepage": "https://github.com/UgliFan/Evergarden#readme",
+  "dependencies": {
+    "axios": "^0.18.0",
+    "koa": "^2.5.3",
+    "koa-router": "^7.4.0"
+  }
+}
