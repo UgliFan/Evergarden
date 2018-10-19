@@ -1,13 +1,12 @@
 const mysql = require('mysql');
-const mysqlConfig = require('./config').mysql;
 
 const pool = mysql.createPool({
     connectionLimit: 50,
-    host: mysqlConfig.host,
-    user: mysqlConfig.user,
-    password: mysqlConfig.password,
+    host: process.env.NODE_MYSQL_HOST,
+    user: process.env.NODE_MYSQL_USER,
+    password: process.env.NODE_MYSQL_PASSWORD,
     database: 'EVERGARDEN',
-    port: mysqlConfig.port,
+    port: 3306,
     multipleStatements: true
 });
 // The pool will emit an acquire event when a connection is acquired from the pool.
