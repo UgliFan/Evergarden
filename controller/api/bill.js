@@ -28,4 +28,14 @@ route.post('/create', async ctx => {
     }
 });
 
+route.get('/list', async ctx => {
+    try {
+        let list = await mysqlInstance.QUERY(`select * from bill`);
+        ctx.body = list;
+    } catch (e) {
+        ctx.status = 500;
+        ctx.body = e.message;
+    }
+});
+
 module.exports = route;
