@@ -2,7 +2,7 @@ const Router = require('koa-router');
 const route = new Router();
 const mysqlInstance = require('../../common/mysql');
 
-router.get('/checkhealth', async ctx => {
+route.get('/checkhealth', async ctx => {
     ctx.status = 200;
     ctx.body = 'ok';
 });
