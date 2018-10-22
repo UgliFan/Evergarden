@@ -1,14 +1,14 @@
 const Router = require('koa-router');
 const route = new Router();
-const mysqlInstance = require('../../common/mysql');
+const userCtl = require('./user');
+const billCtl = require('./bill');
 
 route.get('/checkhealth', async ctx => {
     ctx.status = 200;
     ctx.body = 'ok';
 });
-route.get('/userinfo', async ctx => {
-    let s = await mysqlInstance.QUERY('select * from test');
-    ctx.body = s;
-});
+
+route.use('/user', userCtl.routes(), userCtl.allowedMethods());
+route.use('/bill', billCtl.routes(), billCtl.allowedMethods());
 
 module.exports = route;

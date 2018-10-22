@@ -1,0 +1,11 @@
+{
+    "apps": [{
+        "name"                :  "Evergarden-web",
+        "cwd"                 :  "",
+        "script"              :  "index.js"
+    }, {
+        "name"                :  "Evergarden-api",
+        "cwd"                 :  "",
+        "script"              :  "index-api.js"
+    }]
+}

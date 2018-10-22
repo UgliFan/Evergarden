@@ -35,6 +35,26 @@ const query = (sql, ...params) => {
     });
 };
 
+const insert = (sql, ...params) => {
+    return new Promise((resolve, reject) => {
+        pool.getConnection((err, connection) => {
+            if (err) {
+                reject(err);
+            } else {
+                connection.query(sql, params, (error, res) => {
+                    connection.release();
+                    if (error) {
+                        reject(error);
+                    } else {
+                        resolve(res);
+                    }
+                });
+            }
+        });
+    });
+};
+
 module.exports = {
-    QUERY: query
+    QUERY: query,
+    INSERT: insert
 };
