@@ -1,5 +1,5 @@
 const Koa = require('koa');
-const router = require('./controller/routes');
+const router = require('./controller/routes-api');
 
 const app = new Koa();
 
