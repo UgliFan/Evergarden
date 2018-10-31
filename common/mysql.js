@@ -1,4 +1,5 @@
 const mysql = require('mysql');
+const utils = require('./utils');
 
 const pool = mysql.createPool({
     connectionLimit: 50,
@@ -16,13 +17,14 @@ pool.on('acquire', connection => {
     console.log('Connection %d acquired', connection.threadId);
 });
 
-const query = (sql, ...params) => {
+const query = (sql, ctx) => {
+    if (ctx) ctx.SQL_SUCCESS = true;
     return new Promise((resolve, reject) => {
         pool.getConnection((err, connection) => {
             if (err) {
                 reject(err);
             } else {
-                connection.query(sql, params, (error, res) => {
+                connection.query(sql, (error, res) => {
                     connection.release();
                     if (error) {
                         reject(error);
@@ -35,26 +37,49 @@ const query = (sql, ...params) => {
     });
 };
 
-const insert = (sql, ...params) => {
-    return new Promise((resolve, reject) => {
-        pool.getConnection((err, connection) => {
-            if (err) {
-                reject(err);
-            } else {
-                connection.query(sql, params, (error, res) => {
-                    connection.release();
-                    if (error) {
-                        reject(error);
-                    } else {
-                        resolve(res);
-                    }
-                });
-            }
-        });
-    });
+const existTable = async (tableName) => {
+    try {
+        let result = await query(`show tables like '${tableName}'`);
+        return result.length > 0;
+    } catch (e) {
+        return false;
+    }
+};
+
+const select = async (tableName, params = {}, ctx) => {
+    let columns = params.columns || ['*'];
+    let sql = `select ${columns.join(',')} from ${tableName}`;
+    if (params.where) {
+        let whereFormat = utils.formatSqlWhere(params.where);
+        sql += ` where ${whereFormat}`;
+    }
+    try {
+        return await query(sql, ctx);
+    } catch (e) {
+        ctx.SQL_SUCCESS = false;
+        ctx.body = {
+            code: -500,
+            message: e.message || '内部错误'
+        };
+    }
+};
+
+const insert = async (tableName, params = {}, ctx) => {
+    let format = utils.formatSqlInsert(params);
+    let sql = `insert into ${tableName} set ${format}`;
+    try {
+        return await query(sql, ctx);
+    } catch (e) {
+        ctx.SQL_SUCCESS = false;
+        ctx.body = {
+            code: -500,
+            message: e.message || '内部错误'
+        };
+    }
 };
 
 module.exports = {
-    QUERY: query,
-    INSERT: insert
+    SELECT: select,
+    INSERT: insert,
+    EXIST_TABLE: existTable
 };

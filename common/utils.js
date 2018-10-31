@@ -13,6 +13,34 @@ const formatTime = (date) => {
     return `${year}/${month}/${day} ${hour}:${minute}:${second}`;
 };
 
+const formatSqlWhere = (params) => {
+    let temp = [];
+    for (let k in params) {
+        if (params.hasOwnProperty(k) && params[k] !== undefined) {
+            if (typeof params[k] === 'string') {
+                temp.push(`${k}='${params[k]}'`);
+            } else {
+                temp.push(`${k}=${params[k]}`);
+            }
+        }
+    }
+    return temp.join(' and ');
+};
+
+const formatSqlInsert = (params) => {
+    let temp = [];
+    for (let k in params) {
+        if (params.hasOwnProperty(k) && params[k] !== undefined) {
+            if (typeof params[k] === 'string') {
+                temp.push(`${k}='${params[k]}'`);
+            } else {
+                temp.push(`${k}=${params[k]}`);
+            }
+        }
+    }
+    return temp.join(',');
+};
+
 module.exports = {
-    formatTime
+    formatTime, formatSqlWhere, formatSqlInsert
 };

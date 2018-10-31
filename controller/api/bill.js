@@ -15,27 +15,32 @@ route.post('/create', async ctx => {
     const payType = Number(reqBody.pay_type);
     const payTime = reqBody.pay_time || createTime;
     const author = reqBody.author;
-    try {
-        const bid = uuid().replace(/-/g, '');
-        await mysqlInstance.INSERT(`insert into bill 
-            (bid,sum,address,position,type,create_time,update_time,remark,pay_type,pay_time,author) values 
-            ('${bid}',${sum},'${address}','${position}',${type},'${createTime}','${createTime}','${remark}',${payType},'${payTime}','${author}')`);
+    const month = new Date().toISOString().substr(0, 7);
+    const bid = uuid().replace(/-/g, '');
+    await mysqlInstance.INSERT('bill', {
+        bid, sum, address, position, type,
+        create_time: createTime,
+        remark,
+        pay_type: payType,
+        pay_time: payTime,
+        author
+    }, ctx);
+    if (ctx.SQL_SUCCESS) {
         ctx.status = 200;
         ctx.body = 'ok';
-    } catch (e) {
-        ctx.status = 500;
-        ctx.body = e.message;
     }
 });
 
 route.get('/list', async ctx => {
-    try {
-        let list = await mysqlInstance.QUERY(`select * from bill`);
+    let list = await mysqlInstance.SELECT('bill', null, ctx);
+    if (ctx.SQL_SUCCESS) {
         ctx.body = list;
-    } catch (e) {
-        ctx.status = 500;
-        ctx.body = e.message;
     }
+});
+
+route.get('/check', async ctx => {
+    let isExist = await mysqlInstance.EXIST_TABLE('user');
+    ctx.body = isExist ? 'exist' : 'not exist';
 });
 
 module.exports = route;
