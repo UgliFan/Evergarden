@@ -5,7 +5,7 @@ route.get('/checkhealth', async ctx => {
     ctx.status = 200;
     ctx.body = 'ok';
 });
-route.get('home', '/', async ctx => {
+route.get('/', async ctx => {
     ctx.body = 'home';
 });
 
