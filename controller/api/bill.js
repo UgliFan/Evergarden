@@ -52,10 +52,17 @@ route.post('/create', async ctx => {
 
 route.get('/list', async ctx => {
     let month = (ctx.query.month || '').replace(/(-|\/)/g, '_');
+    let page = Number(ctx.query.page || 1);
+    let pageSize = Number(ctx.query.page_size || 100);
     if (month) {
         let isExist = await mysqlInstance.EXIST_TABLE(`bill${month}`);
         if (isExist) {
-            let list = await mysqlInstance.SELECT(`bill${month}`, null, ctx);
+            let list = await mysqlInstance.SELECT(`bill${month}`, {
+                limit: {
+                    start: (page - 1) * pageSize,
+                    length: pageSize
+                }
+            }, ctx);
             if (ctx.SQL_SUCCESS) {
                 ctx.body = list;
             }

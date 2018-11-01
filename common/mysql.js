@@ -69,6 +69,9 @@ const select = async (tableName, params, ctx) => {
         let whereFormat = utils.formatSqlWhere(params.where);
         sql += ` where ${whereFormat}`;
     }
+    if (params.limit) {
+        sql += ` limit ${params.limit.start},${params.limit.length}`;
+    }
     try {
         return await query(sql, ctx);
     } catch (e) {
