@@ -1,5 +1,6 @@
 const mysql = require('mysql');
 const utils = require('./utils');
+const sqlCommand = require('./sql-command');
 
 const pool = mysql.createPool({
     connectionLimit: 50,
@@ -22,6 +23,7 @@ const query = (sql, ctx) => {
     return new Promise((resolve, reject) => {
         pool.getConnection((err, connection) => {
             if (err) {
+                console.log(err);
                 reject(err);
             } else {
                 connection.query(sql, (error, res) => {
@@ -46,7 +48,21 @@ const existTable = async (tableName) => {
     }
 };
 
-const select = async (tableName, params = {}, ctx) => {
+const createBillTable = async (tableName, ctx) => {
+    let sql = sqlCommand.BILL(tableName);
+    try {
+        await query(sql, ctx);
+    } catch (e) {
+        ctx.SQL_SUCCESS = false;
+        ctx.body = {
+            code: -500,
+            message: e.message || '内部错误'
+        };
+    }
+};
+
+const select = async (tableName, params, ctx) => {
+    if (!params) params = {};
     let columns = params.columns || ['*'];
     let sql = `select ${columns.join(',')} from ${tableName}`;
     if (params.where) {
@@ -78,8 +94,25 @@ const insert = async (tableName, params = {}, ctx) => {
     }
 };
 
+const update = async (tableName, params = {}, ctx) => {
+    let formatWhere = utils.formatSqlWhere(params.where);
+    let formatValues = utils.formatSqlInsert(params.values);
+    let sql = `update ${tableName} set ${formatValues} where ${formatWhere}`;
+    try {
+        return await query(sql, ctx);
+    } catch (e) {
+        ctx.SQL_SUCCESS = false;
+        ctx.body = {
+            code: -500,
+            message: e.message || '内部错误'
+        };
+    }
+};
+
 module.exports = {
     SELECT: select,
     INSERT: insert,
-    EXIST_TABLE: existTable
+    UPDATE: update,
+    EXIST_TABLE: existTable,
+    CREATE_BILL: createBillTable
 };
