@@ -8,7 +8,7 @@ app.use(bodyParser());
 app.use(router.routes());
 app.use(router.allowedMethods());
 
-app.listen(process.env.NODE_PORT || 3001);
-console.log(`Server is listen at ${process.env.NODE_PORT || 3001}`);
+app.listen(process.env.NODE_API_PORT || 3001);
+console.log(`Server is listen at ${process.env.NODE_API_PORT || 3001}`);
 
 module.exports = app;
