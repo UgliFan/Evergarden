@@ -29,7 +29,7 @@ route.get('/list', async ctx => {
 
 route.post('/create', async ctx  => {
     const body = ctx.request.body || {};
-    if (body.type && body.name && body.icon) {
+    if (body.type !== undefined && body.name && body.icon) {
         const doInsert = async () => {
             const params = {
                 id: uuid().replace(/-/g, ''),
