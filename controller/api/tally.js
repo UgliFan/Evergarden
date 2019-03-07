@@ -17,9 +17,9 @@ route.get('/page', async ctx => {
                 columns: [
                     `${coltName}.id`,
                     `${coltName}.open_id`,
-                    `${coltName}.date`,
+                    `DATE_FORMAT(${coltName}.date, '%Y-%m-%d %T') as date`,
                     `${coltName}.date_format`,
-                    `${coltName}.create_at`,
+                    `DATE_FORMAT(${coltName}.create_at, '%Y-%m-%d %T') as create_at`,
                     `${coltName}.remark`,
                     `${coltName}.summary`,
                     `${coltName}.latitude`,
