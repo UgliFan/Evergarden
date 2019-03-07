@@ -6,7 +6,11 @@ const createBill = (tableName) => {
     return "CREATE TABLE `" + tableName + "` (`bid` varchar(255) CHARACTER SET utf8 NOT NULL COMMENT '主键uuid',`sum` int(11) NOT NULL COMMENT '金额',`address` varchar(255) CHARACTER SET utf8 NULL COMMENT '地址',`position` varchar(255) CHARACTER SET utf8 NULL COMMENT '坐标',`type` int(11) NOT NULL COMMENT '消费类型',`create_time` datetime NOT NULL COMMENT '创建时间',`update_time` datetime NOT NULL COMMENT '更新时间',`remark` varchar(255) CHARACTER SET utf8 NULL COMMENT '备注',`pay_type` int(11) NULL COMMENT '支付类型',`pay_time` datetime NOT NULL COMMENT '消费时间',`author` varchar(255) NOT NULL COMMENT '记录人uid',PRIMARY KEY (`bid`));";
 };
 
+const createCategory = () => {
+    return "CREATE TABLE `categories` (`id` varchar(50) NOT NULL,`icon` varchar(50) NULL,`name` varchar(50) NULL,`remark` varchar(255) NULL,`type` int(11) NULL,PRIMARY KEY (`id`)) DEFAULT CHARACTER SET = utf8;";
+};
 module.exports = {
     BILL: createBill,
-    USER: createUser
+    USER: createUser,
+    CATEGORIES: createCategory
 };

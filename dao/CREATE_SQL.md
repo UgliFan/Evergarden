@@ -31,4 +31,15 @@ CREATE TABLE `bill` (
 PRIMARY KEY (`bid`) 
 );
 insert into user (uid,uname,password,avatar,sex,tag,alias,sign,bigavatar,createtime,birthday) values ('26c76003111e483d8f6809a5ae37562f','uglifan','E10ADC3949BA59ABBE56E057F20F883E','http://i0.hdslb.com/bfs/bangumi/2bf35f80c7e7a8a0a00b14b4460a33344bfce03f.jpg',1,'老公','泛特兮','什么都没写~','http://i0.hdslb.com/bfs/bangumi/b6e3986355efc081b7f4aaf9f576c9ce8116e193.jpg','2018-10-22 17:03:44','1991-06-06 12:00:00');
+
+DROP TABLE `categories`;
+CREATE TABLE `categories` (
+`id` varchar(50) NOT NULL,
+`icon` varchar(50) NULL,
+`name` varchar(50) NULL,
+`remark` varchar(255) NULL,
+`type` int(11) NULL,
+PRIMARY KEY (`id`) 
+)
+DEFAULT CHARACTER SET = utf8;
 ```

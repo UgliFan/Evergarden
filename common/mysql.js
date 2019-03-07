@@ -60,6 +60,18 @@ const createBillTable = async (tableName, ctx) => {
         };
     }
 };
+const createCategoryTable = async (ctx) => {
+    let sql = sqlCommand.CATEGORIES();
+    try {
+        await query(sql, ctx);
+    } catch (e) {
+        ctx.SQL_SUCCESS = false;
+        ctx.body = {
+            code: -500,
+            message: e.message || '内部错误'
+        };
+    }
+};
 
 const select = async (tableName, params, ctx) => {
     if (!params) params = {};
@@ -112,10 +124,26 @@ const update = async (tableName, params = {}, ctx) => {
     }
 };
 
+const del = async (tableName, params = {}, ctx) => {
+    let formatWhere = utils.formatSqlWhere(params.where);
+    let sql = `delete from ${tableName} where ${formatWhere}`;
+    try {
+        return await query(sql, ctx);
+    } catch (e) {
+        ctx.SQL_SUCCESS = false;
+        ctx.body = {
+            code: -500,
+            message: e.message || '内部错误'
+        };
+    }
+}
+
 module.exports = {
     SELECT: select,
     INSERT: insert,
     UPDATE: update,
+    DELETE: del,
     EXIST_TABLE: existTable,
-    CREATE_BILL: createBillTable
+    CREATE_BILL: createBillTable,
+    CREATE_CATEGORY: createCategoryTable
 };
