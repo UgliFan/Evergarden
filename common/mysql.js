@@ -1,6 +1,6 @@
 const mysql = require('mysql');
 const utils = require('./utils');
-const sqlCommand = require('./sql-command');
+const sqlCommand = require('../dao/sql-command');
 
 const pool = mysql.createPool({
     connectionLimit: 50,
@@ -48,8 +48,8 @@ const existTable = async (tableName) => {
     }
 };
 
-const createBillTable = async (tableName, ctx) => {
-    let sql = sqlCommand.BILL(tableName);
+const createTally = async (tableName, ctx) => {
+    let sql = sqlCommand.TALLY(tableName);
     try {
         await query(sql, ctx);
     } catch (e) {
@@ -60,7 +60,7 @@ const createBillTable = async (tableName, ctx) => {
         };
     }
 };
-const createCategoryTable = async (ctx) => {
+const createCategory = async (ctx) => {
     let sql = sqlCommand.CATEGORIES();
     try {
         await query(sql, ctx);
@@ -77,9 +77,15 @@ const select = async (tableName, params, ctx) => {
     if (!params) params = {};
     let columns = params.columns || ['*'];
     let sql = `select ${columns.join(',')} from ${tableName}`;
+    if (params.join) {
+        sql += ` left join ${params.join.tb} on ${tableName}.${params.join.leftKey}=${params.join.tb}.${params.join.rightKey}`;
+    }
     if (params.where) {
         let whereFormat = utils.formatSqlWhere(params.where);
         sql += ` where ${whereFormat}`;
+    }
+    if (params.order) {
+        sql += ` order by ${params.order.key} ${params.order.type}`;
     }
     if (params.limit) {
         sql += ` limit ${params.limit.start},${params.limit.length}`;
@@ -144,6 +150,6 @@ module.exports = {
     UPDATE: update,
     DELETE: del,
     EXIST_TABLE: existTable,
-    CREATE_BILL: createBillTable,
-    CREATE_CATEGORY: createCategoryTable
+    CREATE_TALLY: createTally,
+    CREATE_CATEGORY: createCategory
 };

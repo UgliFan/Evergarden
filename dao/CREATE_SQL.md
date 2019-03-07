@@ -42,4 +42,23 @@ CREATE TABLE `categories` (
 PRIMARY KEY (`id`) 
 )
 DEFAULT CHARACTER SET = utf8;
+
+DROP TABLE `tally_2019_02`;
+
+CREATE TABLE `tally_2019_02` (
+`id` varchar(50) NOT NULL,
+`open_id` varchar(50) NOT NULL,
+`date` datetime NOT NULL,
+`latitude` varchar(50) NULL,
+`longitude` varchar(50) NULL,
+`remark` varchar(200) NULL,
+`cid` varchar(50) NOT NULL,
+`summary` bigint NOT NULL,
+`type_backup` int(11) NULL,
+`create_at` datetime NOT NULL,
+`date_format` varchar(50) NOT NULL,
+PRIMARY KEY (`id`) 
+)
+DEFAULT CHARACTER SET = utf8;
+
 ```

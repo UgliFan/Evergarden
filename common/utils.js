@@ -1,3 +1,5 @@
+const weeks = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'];
+
 const formatTime = (date) => {
     let year = date.getFullYear();
     let month = date.getMonth() + 1;
@@ -42,5 +44,5 @@ const formatSqlInsert = (params) => {
 };
 
 module.exports = {
-    formatTime, formatSqlWhere, formatSqlInsert
+    formatTime, formatSqlWhere, formatSqlInsert, weeks
 };
