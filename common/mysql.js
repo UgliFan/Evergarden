@@ -84,6 +84,9 @@ const select = async (tableName, params, ctx) => {
         let whereFormat = utils.formatSqlWhere(params.where);
         sql += ` where ${whereFormat}`;
     }
+    if (params.groupBy) {
+        sql += ` group by ${params.groupBy}`;
+    }
     if (params.order) {
         sql += ` order by ${params.order.key} ${params.order.type}`;
     }
