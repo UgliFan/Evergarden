@@ -32,7 +32,6 @@ route.get('/page', async ctx => {
                     outCount: 0
                 };
                 if (ctx.SQL_SUCCESS) {
-                    console.log(select);
                     select.forEach(item => {
                         if (item.type === 0) {
                             sum.outCount = item.sum;
