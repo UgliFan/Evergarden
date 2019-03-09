@@ -76,16 +76,26 @@ route.get('/page', async ctx => {
                 }
             }, ctx);
             if (ctx.SQL_SUCCESS) {
-                let group = { other: [] };
+                let group = {};
+                let other = [];
+                let order = 0;
                 res.forEach(item => {
                     if (item.date_format && group[item.date_format]) {
-                        group[item.date_format].push(item);
+                        group[item.date_format].list.push(item);
                     } else if (item.date_format) {
-                        group[item.date_format] = [item];
+                        group[item.date_format] = {
+                            list: [item],
+                            order: order
+                        };
+                        order++;
                     } else {
-                        group.other.push(item);
+                        other.push(item);
                     }
                 });
+                group['未知日期'] = {
+                    list: other,
+                    order: order + 1
+                };
                 ctx.body = {
                     code: 0,
                     result: res,
