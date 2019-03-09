@@ -4,7 +4,7 @@ const mysqlInstance = require('../../common/mysql');
 const uuid = require('uuid/v4');
 const { formatTime, weeks } = require('../../common/utils');
 
-const CACHE_EXPIRE_TIME = 1000 * 60 * 60 * 6;
+const CACHE_EXPIRE_TIME = 1000 * 5;
 let countCache = {};
 
 route.get('/page', async ctx => {
@@ -76,9 +76,20 @@ route.get('/page', async ctx => {
                 }
             }, ctx);
             if (ctx.SQL_SUCCESS) {
+                let group = { other: [] };
+                res.forEach(item => {
+                    if (item.date_format && group[item.date_format]) {
+                        group[item.date_format].push(item);
+                    } else if (item.date_format) {
+                        group[item.date_format] = [item];
+                    } else {
+                        group.other.push(item);
+                    }
+                });
                 ctx.body = {
                     code: 0,
                     result: res,
+                    group: group,
                     sum: sum
                 };
             }
