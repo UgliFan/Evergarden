@@ -48,6 +48,14 @@ const existTable = async (tableName) => {
     }
 };
 
+const matchTables = async str => {
+    try {
+        return await query(`show tables like '${str}'`);
+    } catch (e) {
+        return [];
+    }
+}
+
 const createTally = async (tableName, ctx) => {
     let sql = sqlCommand.TALLY(tableName);
     try {
@@ -153,6 +161,7 @@ module.exports = {
     UPDATE: update,
     DELETE: del,
     EXIST_TABLE: existTable,
+    MATCH_TABLE: matchTables,
     CREATE_TALLY: createTally,
     CREATE_CATEGORY: createCategory
 };

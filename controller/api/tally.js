@@ -7,6 +7,28 @@ const { formatTime, weeks } = require('../../common/utils');
 const CACHE_EXPIRE_TIME = 1000 * 5;
 let countCache = {};
 
+route.get('/picker', async ctx => {
+    const select = await mysqlInstance.MATCH_TABLE('tally_%');
+    let years = [];
+    let months = [];
+    select.forEach(item => {
+        let keys = Object.keys(item);
+        keys.forEach(key => {
+            let value = item[key];
+            let split = value.split('_');
+            if (years.indexOf(split[1]) < 0) years.push(split[1]);
+            if (months.indexOf(split[2]) < 0) months.push(split[2]);
+        })
+    });
+    ctx.body = {
+        code: 0,
+        result: {
+            yearArr: years.sort(),
+            monthArr: months.sort()
+        }
+    };
+})
+
 route.get('/page', async ctx => {
     const query = ctx.query || {};
     const page = query.p || 0;
