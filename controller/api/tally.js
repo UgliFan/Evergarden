@@ -92,10 +92,12 @@ route.get('/page', async ctx => {
                         other.push(item);
                     }
                 });
-                group['未知日期'] = {
-                    list: other,
-                    order: order + 1
-                };
+                if (other.length > 0) {
+                    group['未知日期'] = {
+                        list: other,
+                        order: order + 1
+                    };
+                }
                 ctx.body = {
                     code: 0,
                     result: res,
