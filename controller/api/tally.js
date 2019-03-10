@@ -40,11 +40,11 @@ route.get('/page', async ctx => {
             if (!sum) {
                 let select = await mysqlInstance.SELECT(coltName, {
                     columns: ['type' ,'SUM(summary) AS `sum`'],
-                    join: {
+                    join: [{
                         tb: 'categories',
                         leftKey: 'cid',
                         rightKey: 'id'
-                    },
+                    }],
                     groupBy: 'categories.type'
                 }, ctx)
                 sum = {
@@ -74,18 +74,23 @@ route.get('/page', async ctx => {
                     `DATE_FORMAT(${coltName}.create_at, '%Y-%m-%d %T') as create_at`,
                     `${coltName}.remark`,
                     `${coltName}.summary`,
-                    `${coltName}.latitude`,
-                    `${coltName}.longitude`,
                     `${coltName}.cid`,
                     'categories.icon',
                     'categories.`name`',
-                    'categories.type'
+                    'categories.type',
+                    'users.`name` as nickName',
+                    'users.gender',
+                    'users.avatar'
                 ],
-                join: {
+                join: [{
                     tb: 'categories',
                     leftKey: 'cid',
                     rightKey: 'id'
-                },
+                }, {
+                    tb: 'users',
+                    leftKey: 'open_id',
+                    rightKey: 'open_id'
+                }],
                 order: {
                     key: `create_at`,
                     type: sort

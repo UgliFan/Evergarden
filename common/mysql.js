@@ -86,7 +86,9 @@ const select = async (tableName, params, ctx) => {
     let columns = params.columns || ['*'];
     let sql = `select ${columns.join(',')} from ${tableName}`;
     if (params.join) {
-        sql += ` left join ${params.join.tb} on ${tableName}.${params.join.leftKey}=${params.join.tb}.${params.join.rightKey}`;
+        params.join.forEach(item => {
+            sql += ` left join ${item.tb} on ${tableName}.${item.leftKey}=${item.tb}.${item.rightKey}`;
+        })
     }
     if (params.where) {
         let whereFormat = utils.formatSqlWhere(params.where);
