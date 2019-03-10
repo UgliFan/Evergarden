@@ -100,8 +100,7 @@ route.get('/page', async ctx => {
                 }
                 ctx.body = {
                     code: 0,
-                    result: res,
-                    group: group,
+                    result: group,
                     sum: sum
                 };
             }
