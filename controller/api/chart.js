@@ -32,7 +32,7 @@ route.get('/pie', async ctx => {
                 let result = select.map(item => {
                     return {
                         name: item.name,
-                        value: item.sum
+                        value: item.sum / 100
                     };
                 });
                 ctx.body = {
