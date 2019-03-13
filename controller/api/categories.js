@@ -10,6 +10,10 @@ route.get('/list', async ctx => {
         let list = await mysqlInstance.SELECT(`categories`, {
             where: {
                 type: type
+            },
+            order: {
+                key: 'ord',
+                type: 'asc'
             }
         }, ctx);
         if (ctx.SQL_SUCCESS) {
@@ -127,6 +131,37 @@ route.post('/modify', async ctx => {
             ctx.body = {
                 code: 0,
                 message: '没有categories表'
+            };
+        }
+    } else {
+        ctx.body = {
+            code: -1,
+            message: '缺少必要参数'
+        };
+    }
+});
+
+route.post('/order', async ctx => {
+    const body = ctx.request.body || {};
+    if (body.type !== undefined && body.ids) {
+        let sortIds = body.ids.split(',');
+        sortIds.forEach(async (id, index) => {
+            if (id) {
+                await mysqlInstance.UPDATE('categories', {
+                    where: {
+                        id: id,
+                        type: body.type
+                    },
+                    values: {
+                        ord: index
+                    }
+                }, ctx);
+            }
+        });
+        if (ctx.SQL_SUCCESS) {
+            ctx.body = {
+                code: 0,
+                message: '排序成功'
             };
         }
     } else {
