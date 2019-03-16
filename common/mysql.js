@@ -98,7 +98,15 @@ const select = async (tableName, params, ctx) => {
         sql += ` group by ${params.groupBy}`;
     }
     if (params.order) {
-        sql += ` order by ${params.order.key} ${params.order.type}`;
+        sql += ' order by';
+        if (typeof params.order.key === 'string') {
+            sql += ` ${params.order.key} ${params.order.type}`;
+        } else {
+            let orders = params.order.key.map(key => {
+                return `${key} ${params.order.type}`;
+            });
+            sql += ` ${orders.join(',')}`;
+        }
     }
     if (params.limit) {
         sql += ` limit ${params.limit.start},${params.limit.length}`;

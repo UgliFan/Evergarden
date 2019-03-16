@@ -72,7 +72,7 @@ route.get('/page', async ctx => {
                     rightKey: 'open_id'
                 }],
                 order: {
-                    key: `create_at`,
+                    key: ['date', 'create_at'],
                     type: sort
                 },
                 limit: {
@@ -88,6 +88,7 @@ route.get('/page', async ctx => {
                     if (item.date_format && group[item.date_format]) {
                         group[item.date_format].list.push(item);
                     } else if (item.date_format) {
+                        console.log('not exsit', item.date_format);
                         group[item.date_format] = {
                             list: [item],
                             order: order
