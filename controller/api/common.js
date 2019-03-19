@@ -1,6 +1,7 @@
 const Router = require('koa-router');
 const route = new Router();
 const mysqlInstance = require('../../common/mysql');
+const { RunJob, AllCount } = require('../jobs');
 
 route.get('/years', async ctx => {
     const select = await mysqlInstance.MATCH_TABLE('tally_%');
@@ -18,5 +19,8 @@ route.get('/years', async ctx => {
         result: years.sort()
     };
 });
+
+route.get('/runjob', RunJob);
+route.get('/allcount', AllCount);
 
 module.exports = route;

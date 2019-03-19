@@ -21,6 +21,7 @@
   "homepage": "https://github.com/UgliFan/Evergarden#readme",
   "dependencies": {
     "axios": "^0.18.0",
+    "cron": "^1.7.0",
     "koa": "^2.5.3",
     "koa-bodyparser": "^4.2.1",
     "koa-router": "^7.4.0",
