@@ -30,11 +30,6 @@ const start = async () => {
             groupBy: 'open_id, type'
         }, ctx);
         if (ctx.SQL_SUCCESS) {
-            if (result.source) {
-                result.source = result.source.concat(select);
-            } else {
-                result.source = select;
-            }
             select.forEach(row => {
                 let typeKey = row.type === 0 ? 'outCount' : 'inCount';
                 if (!result[row.open_id]) result[row.open_id] = {};
@@ -102,6 +97,24 @@ const AllCount = async ctx => {
         };
     }
 };
+const Pandect = async ctx => {
+    let inCount = 0;
+    let outCount = 0;
+    for (let key in MEM_CACHE) {
+        if (key && Object.prototype.hasOwnProperty.call(MEM_CACHE, key) && MEM_CACHE[key]) {
+            let count = MEM_CACHE[key];
+            inCount += count.inCount;
+            outCount += count.outCount;
+        }
+    }
+    ctx.body = {
+        code: 0,
+        result: {
+            inCount: inCount,
+            outCount: outCount
+        }
+    };
+};
 module.exports = {
-    RunJob, AllCount
+    RunJob, AllCount, Pandect
 };
