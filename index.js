@@ -1,8 +1,10 @@
 const Koa = require('koa');
 const router = require('./controller/routes');
+const { react } = require('./middlewares');
 
 const app = new Koa();
 
+react(app);
 app.use(router.routes());
 app.use(router.allowedMethods());
 

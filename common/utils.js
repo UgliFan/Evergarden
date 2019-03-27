@@ -43,6 +43,11 @@ const formatSqlInsert = (params) => {
     return temp.join(',');
 };
 
+const getIp = (req) => {
+    let ip = req.headers['x-real-ip'] ? req.headers['x-real-ip'] : (req.ip ? req.ip.replace(/::ffff:/, '') : '0.0.0.0');
+    return ip;
+};
+
 module.exports = {
-    formatTime, formatSqlWhere, formatSqlInsert, weeks
+    formatTime, formatSqlWhere, formatSqlInsert, weeks, getIp
 };
