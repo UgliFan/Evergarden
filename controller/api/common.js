@@ -22,5 +22,10 @@ route.get('/years', async ctx => {
 
 route.get('/runjob', RunJob);
 route.get('/allcount', AllCount);
+route.post('/webhook', async ctx => {
+    const body = ctx.request.body || {};
+    console.log(body);
+    ctx.body = 'ok';
+});
 
 module.exports = route;
