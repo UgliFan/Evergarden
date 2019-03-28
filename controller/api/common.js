@@ -44,14 +44,12 @@ route.get('/runjob', RunJob);
 route.get('/allcount', AllCount);
 route.post('/webhook', async ctx => {
     let body = JSON.stringify(ctx.request.body);
-    console.log(ctx.request.body);
     const sig = ctx.request.get('x-hub-signature');
     const event = ctx.request.get('x-github-event');
     const delivery = ctx.request.get('x-github-delivery');
     const signBlob = 'sha1=' + createHmac('sha1', process.env.WEBHOOK_SECRET).update(body).digest('hex');
-    console.log(sig, signBlob, event, delivery);
-    // await execShell();
     if (sig === signBlob && event === 'push' && delivery) {
+        await execShell();
         ctx.body = 'ok';
     } else if (sig !== signBlob) {
         ctx.status = 500;
