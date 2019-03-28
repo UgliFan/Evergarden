@@ -33,13 +33,13 @@ route.post('/webhook', async ctx => {
     if (sig === signBlob && event === 'push' && delivery) {
         ctx.body = 'ok';
     } else if (sig !== signBlob) {
-        ctx.status === 500;
+        ctx.status = 500;
         ctx.body = 'X-Hub-Signature not matched';
     } else if (event !== 'push') {
-        ctx.status === 500;
+        ctx.status = 500;
         ctx.body = 'X-Github-Event not matched push';
     } else if (!delivery) {
-        ctx.status === 500;
+        ctx.status = 500;
         ctx.body = 'No X-Github-Delivery';
     }
 });
