@@ -24,6 +24,7 @@ route.get('/years', async ctx => {
 route.get('/runjob', RunJob);
 route.get('/allcount', AllCount);
 route.post('/webhook', async ctx => {
+    console.log(ctx.request.rawBody);
     const body = JSON.stringify(ctx.request.body);
     const sig = ctx.request.get('x-hub-signature');
     const event = ctx.request.get('x-github-event');
