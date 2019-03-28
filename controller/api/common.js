@@ -28,14 +28,14 @@ route.post('/webhook', async ctx => {
     const sig = ctx.request.get('x-hub-signature');
     const event = ctx.request.get('x-github-event');
     const delivery = ctx.request.get('x-github-delivery');
-    const signBlob = 'sha1=' + createHmac('sha1', process.env.WEBHOOK_SECRET).update(JSON.stringify(body)).digest('hex');
+    const signBlob = 'sha1=' + createHmac('sha1', process.env.WEBHOOK_SECRET).update(JSON.stringify(body.payload)).digest('hex');
     console.log(sig, signBlob, event, delivery);
-    if (sig === signBlob && event && delivery) {
+    if (sig === signBlob && event === 'push' && delivery) {
         ctx.body = 'ok';
-    } else if (!isMatchSig) {
+    } else if (sig !== signBlob) {
         ctx.body = 'X-Hub-Signature not matched';
-    } else if (!event) {
-        ctx.body = 'No X-Github-Event';
+    } else if (event !== 'push') {
+        ctx.body = 'X-Github-Event not matched push';
     } else if (!delivery) {
         ctx.body = 'No X-Github-Delivery';
     }
