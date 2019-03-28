@@ -1,6 +1,7 @@
 const Router = require('koa-router');
 const route = new Router();
 const mysqlInstance = require('../../common/mysql');
+const { createHmac } = require('crypto');
 const { RunJob, AllCount } = require('../jobs');
 
 route.get('/years', async ctx => {
@@ -24,8 +25,20 @@ route.get('/runjob', RunJob);
 route.get('/allcount', AllCount);
 route.post('/webhook', async ctx => {
     const body = ctx.request.body || {};
-    console.log(body);
-    ctx.body = 'ok';
+    const sig = ctx.request.get('x-hub-signature');
+    const event = ctx.request.get('x-github-event');
+    const delivery = ctx.request.get('x-github-delivery');
+    const signBlob = 'sha1=' + createHmac('sha1', process.env.WEBHOOK_SECRET).update(JSON.stringify(body)).digest('hex');
+    console.log(sig, signBlob, event, delivery);
+    if (sig === signBlob && event && delivery) {
+        ctx.body = 'ok';
+    } else if (!isMatchSig) {
+        ctx.body = 'X-Hub-Signature not matched';
+    } else if (!event) {
+        ctx.body = 'No X-Github-Event';
+    } else if (!delivery) {
+        ctx.body = 'No X-Github-Delivery';
+    }
 });
 
 module.exports = route;
