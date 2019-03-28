@@ -1,8 +1,27 @@
 const Router = require('koa-router');
+const { execFile } = require('child_process');
+const { resolve } = require('path');
 const route = new Router();
 const mysqlInstance = require('../../common/mysql');
 const { createHmac } = require('crypto');
 const { RunJob, AllCount } = require('../jobs');
+
+const execShell = () => {
+    return new Promise(resolv => {
+        try {
+            execFile(resolve(__dirname, '../../shell/publish_home.sh'), null, null, (error, stdout, stderr) => {
+                if (error) {
+                    console.log(error);
+                }
+                console.log('exec shell done.');
+                resolv();
+            });
+        } catch (e) {
+            console.log('catch', e);
+            resolv();
+        };
+    });
+};
 
 route.get('/years', async ctx => {
     const select = await mysqlInstance.MATCH_TABLE('tally_%');
@@ -25,12 +44,12 @@ route.get('/runjob', RunJob);
 route.get('/allcount', AllCount);
 route.post('/webhook', async ctx => {
     const body = JSON.stringify(ctx.request.body);
-    console.log(ctx.request.body.payload);
     const sig = ctx.request.get('x-hub-signature');
     const event = ctx.request.get('x-github-event');
     const delivery = ctx.request.get('x-github-delivery');
-    const signBlob = 'sha1=' + createHmac('sha1', process.env.WEBHOOK_SECRET).update(new Buffer(body)).digest('hex');
+    const signBlob = 'sha1=' + createHmac('sha1', process.env.WEBHOOK_SECRET).update(body).digest('hex');
     console.log(sig, signBlob, event, delivery);
+    await execShell();
     if (sig === signBlob && event === 'push' && delivery) {
         ctx.body = 'ok';
     } else if (sig !== signBlob) {
