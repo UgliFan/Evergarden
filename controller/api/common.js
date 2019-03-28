@@ -28,7 +28,7 @@ route.post('/webhook', async ctx => {
     const sig = ctx.request.get('x-hub-signature');
     const event = ctx.request.get('x-github-event');
     const delivery = ctx.request.get('x-github-delivery');
-    const signBlob = 'sha1=' + createHmac('sha1', process.env.WEBHOOK_SECRET).update(JSON.stringify(body.payload)).digest('hex');
+    const signBlob = 'sha1=' + createHmac('sha1', process.env.WEBHOOK_SECRET).update(JSON.stringify(body)).digest('hex');
     console.log(sig, signBlob, event, delivery);
     if (sig === signBlob && event === 'push' && delivery) {
         ctx.body = 'ok';
