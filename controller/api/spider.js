@@ -11,7 +11,7 @@ route.get('/list', async ctx => {
     if (isExsit) {
         let res = await mysqlInstance.SELECT('article_to_read', {
             order: {
-                key: ['hot', 'create_at'],
+                key: ['create_at', 'hot'],
                 type: sort
             },
             limit: {
