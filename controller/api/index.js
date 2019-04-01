@@ -6,6 +6,7 @@ const categoryCtl = require('./categories');
 const tallyCtl = require('./tally');
 const commonCtl = require('./common');
 const chartCtl = require('./chart');
+const spiderCtl = require('./spider');
 
 route.get('/checkhealth', async ctx => {
     ctx.status = 200;
@@ -18,5 +19,6 @@ route.use('/category', categoryCtl.routes(), categoryCtl.allowedMethods());
 route.use('/tally', tallyCtl.routes(), tallyCtl.allowedMethods());
 route.use('/common', commonCtl.routes(), commonCtl.allowedMethods());
 route.use('/chart', chartCtl.routes(), chartCtl.allowedMethods());
+route.use('/spider', spiderCtl.routes(), spiderCtl.allowedMethods());
 
 module.exports = route;

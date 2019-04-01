@@ -1,7 +1,7 @@
 const Router = require('koa-router');
 const route = new Router();
 const mysqlInstance = require('../../common/mysql');
-const { Pandect } = require('../jobs');
+const { WxPandect } = require('../../jobs');
 
 route.get('/pie', async ctx => {
     const query = ctx.query || {};
@@ -116,6 +116,6 @@ route.get('/bar', async ctx => {
     }
 });
 
-route.get('/all', Pandect);
+route.get('/all', WxPandect);
 
 module.exports = route;

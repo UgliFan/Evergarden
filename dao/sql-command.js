@@ -9,10 +9,14 @@ const createTally = (tableName) => {
 };
 const createKV = () => {
     return "CREATE TABLE `global_kv` (`id` varchar(50) NOT NULL,`global_key` varchar(50) NOT NULL,`global_value` varchar(255) NOT NULL,PRIMARY KEY (`id`)) ENGINE=InnoDB DEFAULT CHARACTER SET=utf8 COLLATE=utf8_general_ci COMMENT='基础key_value表'";
-}
+};
+const createArtile = () => {
+    return "CREATE TABLE `article_to_read` (`id` varchar(50) NOT NULL,`link` varchar(200) NOT NULL,`title` varchar(100) NOT NULL,`evaluate` varchar(200) NOT NULL,`source` varchar(50) NOT NULL,`tags` varchar(100) NULL,`create_at` datetime NOT NULL,`hot` int(11) NOT NULL DEFAULT 0,`is_read` boolean NOT NULL,`cover` varchar(100) NULL,PRIMARY KEY (`id`)) ENGINE=InnoDB DEFAULT CHARACTER SET=utf8 COLLATE=utf8_general_ci COMMENT='用爬虫爬去一些感兴趣的热门文章'";
+};
 module.exports = {
     TALLY: createTally,
     USER: createUser,
     CATEGORIES: createCategory,
-    GLOBAL_KV: createKV
+    GLOBAL_KV: createKV,
+    SPIDER_ARTICLE: createArtile
 };

@@ -54,7 +54,7 @@ const JOB = new CronJob({
     timeZone: 'Asia/Shanghai'
 });
 JOB.start();
-const RunJob = async ctx => {
+const WxRunJob = async ctx => {
     if (isRunning) {
         ctx.body = {
             code: -600,
@@ -75,7 +75,7 @@ const RunJob = async ctx => {
         }
     }
 };
-const AllCount = async ctx => {
+const WxAllCount = async ctx => {
     const query = ctx.query || {};
     if (query.id) {
         let result = MEM_CACHE[query.id];
@@ -97,7 +97,7 @@ const AllCount = async ctx => {
         };
     }
 };
-const Pandect = async ctx => {
+const WxPandect = async ctx => {
     let inCount = 0;
     let outCount = 0;
     for (let key in MEM_CACHE) {
@@ -116,5 +116,5 @@ const Pandect = async ctx => {
     };
 };
 module.exports = {
-    RunJob, AllCount, Pandect
+    WxRunJob, WxAllCount, WxPandect
 };

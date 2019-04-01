@@ -5,7 +5,7 @@ const { resolve } = require('path');
 const route = new Router();
 const mysqlInstance = require('../../common/mysql');
 const { createHmac } = require('crypto');
-const { RunJob, AllCount } = require('../jobs');
+const { WxRunJob, WxAllCount } = require('../../jobs');
 
 const execShell = () => {
     try {
@@ -24,8 +24,8 @@ const execShell = () => {
     };
 };
 
-route.get('/runjob', RunJob);
-route.get('/allcount', AllCount);
+route.get('/runjob', WxRunJob);
+route.get('/allcount', WxAllCount);
 
 route.get('/years', async ctx => {
     const select = await mysqlInstance.MATCH_TABLE('tally_%');

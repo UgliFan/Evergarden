@@ -91,7 +91,19 @@ const createGlobalKv = async (ctx) => {
             message: e.message || '内部错误'
         };
     }
-}
+};
+const createSpider = async (ctx) => {
+    let sql = sqlCommand.SPIDER_ARTICLE();
+    try {
+        await query(sql, ctx);
+    } catch (e) {
+        ctx.SQL_SUCCESS = false;
+        ctx.body = {
+            code: -500,
+            message: e.message || '内部错误'
+        };
+    }
+};
 
 const select = async (tableName, params, ctx) => {
     if (!params) params = {};
@@ -186,5 +198,6 @@ module.exports = {
     MATCH_TABLE: matchTables,
     CREATE_TALLY: createTally,
     CREATE_CATEGORY: createCategory,
-    CREATE_KV: createGlobalKv
+    CREATE_KV: createGlobalKv,
+    CREATE_SPIDER: createSpider
 };
