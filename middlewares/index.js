@@ -1,3 +1,3 @@
 const react = require('./react');
-
-module.exports = { react };
+const pv = require('./pv');
+module.exports = { react, pv };

@@ -1,6 +1,7 @@
 const Router = require('koa-router');
 const route = new Router();
 const homeCtl = require('./home.controller');
+const { pv } = require('../../middlewares');
 
 route.get('/versions', async ctx => {
     try {
@@ -10,6 +11,6 @@ route.get('/versions', async ctx => {
         ctx.body = `err: ${e.message}`;
     }
 });
-route.get('home', '/', homeCtl);
+route.get('home', '/', pv, homeCtl);
 
 module.exports = route;

@@ -80,6 +80,18 @@ const createCategory = async (ctx) => {
         };
     }
 };
+const createGlobalKv = async (ctx) => {
+    let sql = sqlCommand.GLOBAL_KV();
+    try {
+        await query(sql, ctx);
+    } catch (e) {
+        ctx.SQL_SUCCESS = false;
+        ctx.body = {
+            code: -500,
+            message: e.message || '内部错误'
+        };
+    }
+}
 
 const select = async (tableName, params, ctx) => {
     if (!params) params = {};
@@ -173,5 +185,6 @@ module.exports = {
     EXIST_TABLE: existTable,
     MATCH_TABLE: matchTables,
     CREATE_TALLY: createTally,
-    CREATE_CATEGORY: createCategory
+    CREATE_CATEGORY: createCategory,
+    CREATE_KV: createGlobalKv
 };

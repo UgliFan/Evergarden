@@ -7,8 +7,12 @@ const createCategory = () => {
 const createTally = (tableName) => {
     return "CREATE TABLE `" + tableName + "` (`id` varchar(50) NOT NULL,`open_id` varchar(50) NOT NULL,`date` datetime NOT NULL,`latitude` varchar(50) NULL,`longitude` varchar(50) NULL,`remark` varchar(200) NULL,`cid` varchar(50) NOT NULL,`summary` bigint NOT NULL,`type_backup` int(11) NULL,`create_at` datetime NOT NULL,`date_format` varchar(50) NOT NULL,PRIMARY KEY (`id`))DEFAULT CHARACTER SET = utf8;";
 };
+const createKV = () => {
+    return "CREATE TABLE `global_kv` (`id` varchar(50) NOT NULL,`global_key` varchar(50) NOT NULL,`global_value` varchar(255) NOT NULL,PRIMARY KEY (`id`)) ENGINE=InnoDB DEFAULT CHARACTER SET=utf8 COLLATE=utf8_general_ci COMMENT='基础key_value表'";
+}
 module.exports = {
     TALLY: createTally,
     USER: createUser,
-    CATEGORIES: createCategory
+    CATEGORIES: createCategory,
+    GLOBAL_KV: createKV
 };

@@ -24,6 +24,9 @@ const execShell = () => {
     };
 };
 
+route.get('/runjob', RunJob);
+route.get('/allcount', AllCount);
+
 route.get('/years', async ctx => {
     const select = await mysqlInstance.MATCH_TABLE('tally_%');
     let years = [];
@@ -40,9 +43,6 @@ route.get('/years', async ctx => {
         result: years.sort()
     };
 });
-
-route.get('/runjob', RunJob);
-route.get('/allcount', AllCount);
 route.post('/webhook', async ctx => {
     let body = JSON.stringify(ctx.request.body);
     const sig = ctx.request.get('x-hub-signature');
@@ -63,5 +63,26 @@ route.post('/webhook', async ctx => {
         ctx.body = 'No X-Github-Delivery';
     }
 });
+route.post('/puv', async ctx => {
+    let isExsit = await mysqlInstance.EXIST_TABLE('global_kv');
+    let result = {
+        pv: 0,
+        uv: 0
+    };
+    if (isExsit) {
+        let result = await mysqlInstance.SELECT('global_kv');
+        result.forEach(row => {
+            if (row.global_key === 'uglifan_pv') {
+                result.pv = parseInt(row.global_value);
+            } else if (row.global_key === 'uglifan_uv') {
+                result.uv = parseInt(row.global_value);
+            }
+        });
+    }
+    ctx.body = {
+        code: 0,
+        result: result
+    };
+})
 
 module.exports = route;

@@ -45,4 +45,12 @@ PRIMARY KEY (`id`)
 )
 DEFAULT CHARACTER SET = utf8;
 
+CREATE TABLE `global_kv` (
+	`id` varchar(50) NOT NULL,
+	`global_key` varchar(50) NOT NULL,
+	`global_value` varchar(255) NOT NULL,
+	PRIMARY KEY (`id`)
+) ENGINE=InnoDB
+DEFAULT CHARACTER SET=utf8 COLLATE=utf8_general_ci
+COMMENT='基础key_value表';
 ```
