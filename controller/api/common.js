@@ -70,12 +70,14 @@ route.get('/puv', async ctx => {
         uv: 0
     };
     if (isExsit) {
-        let result = await mysqlInstance.SELECT('global_kv');
-        result.forEach(row => {
+        let select = await mysqlInstance.SELECT('global_kv');
+        select.forEach(row => {
             if (row.global_key === 'uglifan_pv') {
                 result.pv = parseInt(row.global_value);
+                console.log(row.global_value);
             } else if (row.global_key === 'uglifan_uv') {
                 result.uv = parseInt(row.global_value);
+                console.log(row.global_value);
             }
         });
     }
