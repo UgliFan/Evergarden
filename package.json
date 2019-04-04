@@ -21,6 +21,7 @@
   "homepage": "https://github.com/UgliFan/Evergarden#readme",
   "dependencies": {
     "axios": "^0.18.0",
+    "cheerio": "^1.0.0-rc.2",
     "cron": "^1.7.0",
     "crypto": "^1.0.1",
     "koa": "^2.5.3",

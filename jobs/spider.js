@@ -1,6 +1,7 @@
 const axios = require('axios');
 const CronJob = require('cron').CronJob;
 const uuid = require('uuid/v4');
+const cheerio = require('cheerio');
 const mysqlInstance = require('../common/mysql');
 const { formatTime } = require('../common/utils');
 let isRunning = false;
@@ -24,6 +25,14 @@ const SOURCES = [{
         tags: '[tags].title',
         cover: 'screenshot',
         hot: 'hotIndex'
+    }
+}, {
+    source: '简书',
+    type: 'html',
+    url: 'https://www.jianshu.com/c/ebc9d2e84214',
+    params: {
+        order_by: 'top',
+        _pjax: '#list-container'
     }
 }];
 
@@ -77,14 +86,13 @@ const ajaxSpiderHandler = async (info) => {
                 params.create_at = formatTime(new Date());
                 let select = await mysqlInstance.SELECT('article_to_read', {
                     where: {
-                        title: params.title
+                        title: params.title,
+                        source: params.source
                     }
                 }, ctx);
                 if (ctx.SQL_SUCCESS && select && select.length === 0) {
-                    let insert = await mysqlInstance.INSERT('article_to_read', params, ctx);
-                    if (ctx.SQL_SUCCESS) {
-                        console.log(insert);
-                    } else {
+                    await mysqlInstance.INSERT('article_to_read', params, ctx);
+                    if (!ctx.SQL_SUCCESS) {
                         console.log(ctx);
                     }
                 }
@@ -94,7 +102,72 @@ const ajaxSpiderHandler = async (info) => {
         console.log(e.message);
     }
 };
-
+const htmlSpiderHandler = async info => {
+    try {
+        let response = await axios({
+            method: 'get',
+            url: info.url,
+            params: info.params
+        });
+        let htmlStr = response.status === 200 && response.data ? response.data : '';
+        if (htmlStr) {
+            const $ = cheerio.load(htmlStr);
+            const $list = $('html').find('ul.note-list li');
+            for (let i = 0; i < $list.length; i++) {
+                let ctx = {};
+                let item = $list[i];
+                let $title = $(item).find('a.title');
+                let link = $title.attr('href');
+                if (link.indexOf('/') === 0) {
+                    link = `https://www.jianshu.com${link}`;
+                }
+                let title = $title.text() || '';
+                title = title.replace(/(\s|\n|\t|\r)/g, '');
+                if (title.length > 100) {
+                    title = title.substr(0, 100);
+                }
+                let cover = $(item).find('.wrap-img img').attr('src') || '';
+                if (cover && !/^http(s)?:.*/.test(cover)) {
+                    cover = `https:${cover}`;
+                }
+                if (cover.length > 100) {
+                    cover = cover.substr(0, 100);
+                }
+                let evaluate = $(item).find('.abstract').text() || '';
+                evaluate = evaluate.replace(/(\s|\n|\t|\r)/g, '');
+                if (evaluate.length > 200) {
+                    evaluate = evaluate.substr(0, 200);
+                }
+                let hot = $(item).find('.jsd-meta').text() || '';
+                hot = hot.replace(/(\s|\n|\t|\r)/g, '');
+                if (hot && !isNaN(hot)) {
+                    hot = Number(hot) * 100;
+                } else {
+                    hot = 0;
+                }
+                const tags = 'Flutter';
+                let params = { link, cover, title, evaluate, hot, tags };
+                params.id = uuid().replace(/-/g, '');
+                params.source = info.source;
+                params.create_at = formatTime(new Date());
+                let select = await mysqlInstance.SELECT('article_to_read', {
+                    where: {
+                        title: params.title,
+                        source: params.source
+                    }
+                }, ctx);
+                if (ctx.SQL_SUCCESS && select && select.length === 0) {
+                    await mysqlInstance.INSERT('article_to_read', params, ctx);
+                    if (!ctx.SQL_SUCCESS) {
+                        console.log(ctx);
+                    }
+                }
+            }
+        }
+    } catch (e) {
+        console.log(e.message);
+    }
+};
 const start = async () => {
     let isExsit = await mysqlInstance.EXIST_TABLE('article_to_read');
     if (!isExsit) {
@@ -105,6 +178,8 @@ const start = async () => {
         let item = SOURCES[i];
         if (item.type === 'ajax') {
             await ajaxSpiderHandler(item);
+        } else {
+            await htmlSpiderHandler(item);
         }
     }
 };
