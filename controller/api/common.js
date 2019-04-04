@@ -63,7 +63,7 @@ route.post('/webhook', async ctx => {
         ctx.body = 'No X-Github-Delivery';
     }
 });
-route.post('/puv', async ctx => {
+route.get('/puv', async ctx => {
     let isExsit = await mysqlInstance.EXIST_TABLE('global_kv');
     let result = {
         pv: 0,
