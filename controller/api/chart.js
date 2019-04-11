@@ -9,14 +9,36 @@ route.get('/pie', async ctx => {
         const coltName = `tally_${query.y}_${query.m}`;
         const isExsit = await mysqlInstance.EXIST_TABLE(coltName);
         if (isExsit) {
-            const select = await mysqlInstance.SELECT(coltName, {
+            const selectOut = await mysqlInstance.SELECT(coltName, {
                 columns: [
                     'cid',
                     '`name`',
                     'SUM(summary) AS `sum`'
                 ],
                 where: {
-                    type: Number(query.type || 0)
+                    type: 0,
+                    open_id: query.id
+                },
+                join: [{
+                    tb: 'categories',
+                    leftKey: 'cid',
+                    rightKey: 'id'
+                }],
+                groupBy: 'cid',
+                order: {
+                    key: '`sum`',
+                    type: 'desc'
+                }
+            }, ctx);
+            const selectIn = await mysqlInstance.SELECT(coltName, {
+                columns: [
+                    'cid',
+                    '`name`',
+                    'SUM(summary) AS `sum`'
+                ],
+                where: {
+                    type: 1,
+                    open_id: query.id
                 },
                 join: [{
                     tb: 'categories',
@@ -30,7 +52,13 @@ route.get('/pie', async ctx => {
                 }
             }, ctx);
             if (ctx.SQL_SUCCESS) {
-                let result = select.map(item => {
+                let outList = selectOut.map(item => {
+                    return {
+                        name: item.name,
+                        value: item.sum / 100
+                    };
+                });
+                let inList = selectIn.map(item => {
                     return {
                         name: item.name,
                         value: item.sum / 100
@@ -38,19 +66,25 @@ route.get('/pie', async ctx => {
                 });
                 ctx.body = {
                     code: 0,
-                    result: result
+                    result: { outList, inList }
                 };
             }
         } else {
             ctx.body = {
                 code: 0,
-                result: []
+                result: {
+                    outList: [],
+                    inList: []
+                }
             };
         }
     } else if (query.y) {
         ctx.body = {
             code: 0,
-            result: []
+            result: {
+                outList: [],
+                inList: []
+            }
         };
     } else {
         ctx.body = {
@@ -66,13 +100,34 @@ route.get('/bar', async ctx => {
         const coltName = `tally_${query.y}_${query.m}`;
         const isExsit = await mysqlInstance.EXIST_TABLE(coltName);
         if (isExsit) {
-            const select = await mysqlInstance.SELECT(coltName, {
+            const selectOut = await mysqlInstance.SELECT(coltName, {
                 columns: [
                     'date_format',
                     'SUM(summary) AS `sum`'
                 ],
                 where: {
-                    type: Number(query.type || 0)
+                    type: 0,
+                    open_id: query.id
+                },
+                join: [{
+                    tb: 'categories',
+                    leftKey: 'cid',
+                    rightKey: 'id'
+                }],
+                groupBy: 'date_format',
+                order: {
+                    key: 'date',
+                    type: 'asc'
+                }
+            }, ctx);
+            const selectIn = await mysqlInstance.SELECT(coltName, {
+                columns: [
+                    'date_format',
+                    'SUM(summary) AS `sum`'
+                ],
+                where: {
+                    type: 1,
+                    open_id: query.id
                 },
                 join: [{
                     tb: 'categories',
@@ -86,7 +141,13 @@ route.get('/bar', async ctx => {
                 }
             }, ctx);
             if (ctx.SQL_SUCCESS) {
-                let result = select.map(item => {
+                let outList = selectOut.map(item => {
+                    return {
+                        name: item.date_format,
+                        value: item.sum / 100
+                    };
+                });
+                let inList = selectIn.map(item => {
                     return {
                         name: item.date_format,
                         value: item.sum / 100
@@ -94,19 +155,25 @@ route.get('/bar', async ctx => {
                 });
                 ctx.body = {
                     code: 0,
-                    result: result
+                    result: { outList, inList }
                 };
             }
         } else {
             ctx.body = {
                 code: 0,
-                result: []
+                result: {
+                    outList: [],
+                    inList: []
+                }
             };
         }
     } else if (query.y) {
         ctx.body = {
             code: 0,
-            result: []
+            result: {
+                outList: [],
+                inList: []
+            }
         };
     } else {
         ctx.body = {
